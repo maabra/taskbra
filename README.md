@@ -1,4 +1,4 @@
-# Taskfield
+# Taskbra
 
 A calm, responsive personal task manager built with **strict TypeScript**, plain HTML/CSS, and Vite. No account or backend required.
 
@@ -46,6 +46,11 @@ Vite uses relative asset URLs, so both repository Pages URLs and custom domains 
 - `src/main.ts`: application state, rendering, forms, events, and persistence.
 - `src/style.css`: responsive visual design.
 - `src/tasks.test.ts`: meaningful tests for validation, dates, and summaries.
-- `PRACTICE.md`: guided beginner exercises and stretch goals.
 
-Tasks stay in this browser on this origin; they do not sync between devices. Export a backup before clearing browser data or moving domains. Storage failures show a message. An invalid saved payload is left untouched during initial load; later task changes save the new in-memory state. Optional Google Fonts fall back to local sans-serif fonts when offline. User-provided task text is escaped before rendering.
+Tasks stay in this browser on this origin; they do not sync between devices. Export a backup before clearing browser data or moving domains. Storage failures show a message. Unreadable saved data blocks writes to prevent data loss. Failed saves leave the current task list unchanged. Concurrent edits from other tabs are detected before saving; reload to resolve them. Optional Google Fonts fall back to local sans-serif fonts when offline. User-provided task text is escaped before rendering.
+
+## Additional controls
+
+Vista Aero styling includes translucent window chrome, glossy buttons, and a desktop taskbar. Use **Complete visible tasks** to finish the current filtered list, **Clear completed** to remove finished tasks, and **Undo removal** to restore the last deletion or clear operation. Undo remains available for this session and restores tasks with new IDs. Press **N** to create a task or **/** to search when outside a form or dialog.
+
+Task imports and creation enforce title, description, tag, and task-count limits. Task data is limited to 5000 tasks and imports to 5 MB. Deadline indicators refresh while the app is open. Writes detect changes from other tabs before saving; this is a conflict check, not a transactional multi-user database.
