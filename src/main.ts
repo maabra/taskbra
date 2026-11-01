@@ -15,6 +15,9 @@ let storageWarning = '';
 let snapshot: string | null = null;
 let storageBlocked = false;
 let toastTimer: number | undefined;
+// Task text goes into HTML templates, so escape characters with HTML meaning.
+// element.innerHTML = task.title;
+// For plain text, prefer element.textContent = task.title instead.
 const escape = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 try {
   const saved = localStorage.getItem(key);
@@ -25,6 +28,9 @@ try {
     { title: 'Make a little room for focus', description: 'A clear desk. One task. Twenty minutes.', priority: 'low' as const, tags: ['habits'] }
   ].map((t, i) => ({ ...createTask(t, i + 1), status: i === 0 ? 'in-progress' : i === 2 ? 'done' : 'todo' }));
 } catch { storageBlocked = true; storageWarning = 'Saved tasks could not be loaded. Changes are blocked to protect your data. Check browser storage permissions or back up the saved data before reloading.'; }
+// Persist first, then replace live state. Callers pass a new array of tasks.
+// tasks = next; localStorage.setItem(key, JSON.stringify(next));
+// If saving throws, the screen and storage would disagree about what was saved.
 function save(next: Task[]): boolean {
   try {
     if (storageBlocked) throw new Error('Saving is blocked to protect unreadable data. Back up your browser storage and reload.');
@@ -71,6 +77,9 @@ function render() {
   for (const v of ['all', ...statuses, 'overdue']) $(`#count-${v}`).textContent = String(tasks.filter(t => v === 'all' || (v === 'overdue' ? isOverdue(t) : t.status === v)).length);
   document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach(b => { b.classList.toggle('selected', b.dataset.view === view); b.setAttribute('aria-current', b.dataset.view === view ? 'page' : 'false'); });
   const title = view === 'all' ? 'All tasks' : view === 'overdue' ? 'Overdue' : labels[view as TaskStatus]; $('#breadcrumb').textContent = title;
+  // Normalize both the query and task text so search ignores letter case.
+  // task.title.includes(search.toLowerCase());
+  // Only normalizing one side would miss titles containing uppercase letters.
   const query = search.toLowerCase().replace(/^#/, '');
   const filtered = tasks.filter(t => (view === 'all' || (view === 'overdue' ? isOverdue(t) : t.status === view)) && (priority === 'all' || t.priority === priority) && `${t.title} ${t.description ?? ''} ${t.tags.join(' ')}`.toLowerCase().includes(query));
   filtered.sort((a, b) => sort === 'title' ? a.title.localeCompare(b.title) : sort === 'priority' ? priorities.indexOf(b.priority) - priorities.indexOf(a.priority) : sort === 'due' ? (a.dueDate?.getTime() ?? Infinity) - (b.dueDate?.getTime() ?? Infinity) : b.id - a.id);
@@ -121,6 +130,9 @@ $('#cancel-delete').onclick = () => $<HTMLDialogElement>('#delete-dialog').close
 $('#confirm-delete').onclick = () => { const previous = tasks; if (!save(tasks.filter(t => t.id !== deleting))) return; undoTasks = previous.filter(task => task.id === deleting); $('#undo').removeAttribute('disabled'); $<HTMLDialogElement>('#delete-dialog').close(); toast('Task deleted.'); };
 $('#export').onclick = () => { const url = URL.createObjectURL(new Blob([JSON.stringify(tasks, null, 2)], { type: 'application/json' })); const a = document.createElement('a'); a.href = url; a.download = `taskbra-${new Date().toISOString().slice(0, 10)}.json`; document.body.append(a); a.click(); a.remove(); window.setTimeout(() => URL.revokeObjectURL(url), 1000); toast('Your backup is ready.'); };
 $('#import').onclick = () => $<HTMLInputElement>('#file').click();
+// File reading is asynchronous. Validate the entire import before saving it.
+// const incoming = parseTasks(file.text());
+// file.text() returns Promise<string>, so it must be awaited first.
 $('#file').onchange = async e => {
   const input = e.target as HTMLInputElement; const file = input.files?.[0]; if (!file) return;
   try { if (file.size > 5_000_000) throw new Error('Please use a file smaller than 5 MB.'); const incoming = parseTasks(await file.text()); if (!save(mergeTasks(tasks, incoming))) return; toast(`Imported ${incoming.length} tasks. Existing tasks were kept.`); } catch (error) { toast(error instanceof Error ? error.message : 'Could not import this file.'); } finally { input.value = ''; }

@@ -1,1 +1,24 @@
-{"compilerOptions":{"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","lib":["ES2022","DOM","DOM.Iterable"],"strict":true,"noEmit":true,"allowImportingTsExtensions":true,"skipLibCheck":true},"include":["src/main.ts","src/tasks.ts"]}
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "skipLibCheck": true,
+    "types": [
+      "vite/client"
+    ],
+    "noUncheckedSideEffectImports": true
+  },
+  "include": [
+    "src/main.ts",
+    "src/tasks.ts"
+  ]
+}
