@@ -1,6 +1,6 @@
 # Taskbra
 
-A calm, responsive personal task manager built with **strict TypeScript**, plain HTML/CSS, and Vite. No account or backend required.
+A personal task manager built with **strict TypeScript**, plain HTML/CSS, and Vite
 
 ## Run locally
 
@@ -31,15 +31,6 @@ npm run preview
 - Responsive layout, labeled controls, keyboard focus styles, and native dialogs.
 - Three sample tasks on first visit, plus an in-app learning guide.
 
-## Publish on GitHub Pages
-
-1. Create a GitHub repository and push these files to its `main` branch.
-2. In **Settings ? Pages ? Build and deployment**, select **GitHub Actions**.
-3. The included `.github/workflows/deploy.yml` tests, builds, and deploys on pushes to `main`. You can also run it manually from Actions.
-4. Open the deployment URL shown by the workflow.
-
-Vite uses relative asset URLs, so both repository Pages URLs and custom domains work. No secrets are required. If you use a different default branch, update the workflow branch name.
-
 ## Understand the code
 
 - `src/tasks.ts`: data types, creation, deadlines, completion, and import validation.
@@ -51,6 +42,6 @@ Tasks stay in this browser on this origin; they do not sync between devices. Exp
 
 ## Additional controls
 
-Vista Aero styling includes translucent window chrome, glossy buttons, and a desktop taskbar. Use **Complete visible tasks** to finish the current filtered list, **Clear completed** to remove finished tasks, and **Undo removal** to restore the last deletion or clear operation. Undo remains available for this session and restores tasks with new IDs. Press **N** to create a task or **/** to search when outside a form or dialog.
+Use **Complete visible tasks** to finish the current filtered list, **Clear completed** to remove finished tasks, and **Undo removal** to restore the last deletion or clear operation. Undo remains available for this session and restores tasks with new IDs. Press **N** to create a task or **/** to search when outside a form or dialog.
 
 Task imports and creation enforce title, description, tag, and task-count limits. Task data is limited to 5000 tasks and imports to 5 MB. Deadline indicators refresh while the app is open. Writes detect changes from other tabs before saving; this is a conflict check, not a transactional multi-user database.
