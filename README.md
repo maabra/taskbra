@@ -1,6 +1,6 @@
 # Taskbra
 
-A personal task manager built with **strict TypeScript**, plain HTML/CSS, and Vite
+A personal task manager built with **strict TypeScript**, plain HTML/CSS and Vite
 
 ## Run locally
 
